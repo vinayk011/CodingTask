@@ -69,7 +69,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         networkLoader?.dismiss()
         when (res) {
             is NetworkResponse.Success -> {
-                //todo process response
                 res.response?.let {
                     repositoryList = it
                     adapterRepository?.setRepositories(repositoryList)
