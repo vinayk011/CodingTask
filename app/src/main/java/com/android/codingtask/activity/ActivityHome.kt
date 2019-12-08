@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.android.codingtask.R
+import com.android.codingtask.base.BaseActivity
 import com.android.codingtask.databinding.ActivityHomeBinding
 import com.android.codingtask.util.inflateActivity
 import kotlinx.android.synthetic.main.activity_home.*

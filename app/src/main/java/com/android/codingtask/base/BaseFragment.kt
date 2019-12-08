@@ -1,5 +1,6 @@
-package com.android.codingtask.fragment
+package com.android.codingtask.base
 
+import android.app.Activity
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
@@ -7,6 +8,7 @@ import android.widget.Toast
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
+import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
 
@@ -125,6 +127,22 @@ open class BaseFragment<T : ViewDataBinding> : Fragment() {
         }
         dialogs.remove(dialog)
     }
+
+    fun showSnackBar(message: String) {
+        snackBar(message).show()
+    }
+
+    fun showSnackBar(message: String, duration: Int) {
+        snackBar(message, duration).show()
+    }
+    private fun snackBar(message: String, duration: Int): Snackbar =
+        Snackbar.make((context as Activity).findViewById(android.R.id.content), message, duration)
+
+    fun snackBar(message: String): Snackbar =
+        Snackbar.make(
+            (context as Activity).findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG
+        )
+
 
     fun toast(message: String) = Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }

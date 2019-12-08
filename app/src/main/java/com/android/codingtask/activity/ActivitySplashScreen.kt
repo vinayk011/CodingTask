@@ -2,6 +2,7 @@ package com.android.codingtask.activity
 
 import android.os.Bundle
 import com.android.codingtask.R
+import com.android.codingtask.base.BaseActivity
 import com.android.codingtask.databinding.ActivitySplashScreenBinding
 import com.android.codingtask.util.home
 import com.android.codingtask.util.inflateActivity
