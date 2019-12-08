@@ -1,24 +1,93 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+    def env = { ->
+        def code = project.hasProperty('env') ? env : "dev"
+        return code
+    }
+
+    flavorDimensions "codingTask"
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    buildToolsVersion '29.0.2'
+    def code = 1
+    def major = 1
+    def minor = 0
+    def patch = 0
+    def suffix = ""
+    def app_name = ""
+    def url = ""
+
+    def versionPropsFile = file('version.properties')
+    if (versionPropsFile.canRead()) {
+        Properties versionProps = new Properties()
+        versionProps.load(new FileInputStream(versionPropsFile))
+        major = versionProps['major'].toInteger()
+        minor = versionProps['minor'].toInteger()
+        patch = versionProps['patch'].toInteger()
+        code = versionProps['code'].toInteger()
+    }
     defaultConfig {
         applicationId "com.android.codingtask"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode code
+        versionName major + "." + minor + "." + patch
+        signingConfig signingConfigs.debug
+        multiDexEnabled true
+        resConfigs "en"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    dataBinding {
+        enabled = true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    productFlavors {
+        if (env() == "dev" || env() == "all") {
+            def debugFile = file('dev.properties')
+            if (debugFile.canRead()) {
+                dev {
+                    dimension "codingTask"
+                    Properties debugProps = new Properties()
+                    debugProps.load(new FileInputStream(debugFile))
+                    suffix = debugProps['suffix'].toString()
+                    app_name = debugProps['app.name'].toString()
+                    url = debugProps['web.gitUrl'].toString()
+                    versionNameSuffix suffix
+                    resValue "string", "app_name", app_name
+                    buildConfigField "String", "WEB_GIT_URL", url
+                }
+            }
+        }
+        if (env() == "prod" || env() == "all") {
+            def prodFile = file('prod.properties')
+            if (prodFile.canRead()) {
+                prod {
+                    dimension "titan"
+                    Properties prodProps = new Properties()
+                    prodProps.load(new FileInputStream(prodFile))
+                    suffix = prodProps['suffix'].toString()
+                    app_name = prodProps['app.name'].toString()
+                    url = prodProps['web.gitUrl'].toString()
+                    versionNameSuffix suffix
+                    resValue "string", "app_name", app_name
+                    buildConfigField "String", "WEB_GIT_URL", url
+                }
+            }
+        }
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            outputFileName = "CodingTask_${variant.versionName}_${variant.buildType.name}_${variant.versionCode}.apk"
         }
     }
 }
@@ -26,10 +95,16 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.core:core-ktx:1.0.2'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation "androidx.multidex:multidex:$multidex_version"
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation "androidx.core:core-ktx:$ktx_version"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
+
+    kapt "com.android.databinding:compiler:$gradle_version"
+
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
