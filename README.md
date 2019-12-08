@@ -1,7 +1,10 @@
 # CodingTask 
 Launguage : KOTLIN
-Libraries used: Retrofit - to make rest api calls, Picasso - To load images into imageviews from url. 
-Jetpack components : Data binding, Navigation Archetecture, Viewmodel, lifecycle observers.
+
+Libraries used: 
+  Retrofit - to make rest api calls, 
+  Picasso - To load images into imageviews from url. 
+  Jetpack components : Data binding, Navigation Archetecture, Viewmodel, lifecycle observers.
 
 How to import project from github to android studio:
   1. Go to Android Studio and go to Menu / VCS / Checkout from Version Control / Git
